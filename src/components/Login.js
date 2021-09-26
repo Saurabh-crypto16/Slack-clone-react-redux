@@ -1,26 +1,18 @@
 import React from "react";
 import styled from "styled-components";
-import "./App.css";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import Header from "./components/Header";
-import Sidebar from "./components/Sidebar";
-import Chat from "./components/Chat";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "./firebase";
-import Login from "./components/Login";
-import Spinner from "react-spinkit";
+import { Button } from "@material-ui/core";
+import { auth, provider } from "../firebase";
 
-function App() {
-  //firebase hooks to get user
-  const [user, loading] = useAuthState(auth);
-
-  //this div will render when app is loading on refresh
-  if (loading) {
-    return (
-      <AppLoading>
-        <AppLoadingContents>
-          <img
-            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACo
+function Login() {
+  const signIn = (e) => {
+    e.preventDefault();
+    auth.signInWithPopup(provider).catch((err) => alert(err.message));
+  };
+  return (
+    <LoginContainer>
+      <LoginInnerContainer>
+        <img
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACo
           CAMAAABt9SM9AAAA7VBMVEX///82xfHrsi0ttn7fHVoqw/HrsSjrsCCW2fH
           eA1LplKmd1r0es3ju0JQqtX7bEVfnuVRbyOzdAE2i4fjU7uL12KDu0Zn3y9f
           dAEvqrQ7fFFam3vMes3lfwpe24/Ts9vK64c/utMP11996y6fm9Pl20O/0+fu
@@ -79,61 +71,35 @@ function App() {
           39CxuAXzZmKE1D1xG4ycHnYD7SjFO3iuG8n0zSfvzpXHLPitIX3Kx8cDtpRv
           B6TyVPl0Wm+Pz0/v7bn3hhNPiEOlg8Xjhb2u63JGoCayeB/VV8qlIEJUvoA
           AAAASUVORK5CYII="
-            alt=""
-          />
-          <Spinner name="ball-spin-fade-loader" color="purple" fadeIn="none" />
-        </AppLoadingContents>
-      </AppLoading>
-    );
-  }
-  return (
-    <div className="app">
-      <Router>
-        {!user ? (
-          <Login />
-        ) : (
-          <>
-            {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
-            <Header />
-            <AppBody>
-              <Sidebar />
-              <Switch>
-                <Route path="/">
-                  <Chat />
-                </Route>
-              </Switch>
-            </AppBody>
-          </>
-        )}
-      </Router>
-    </div>
+          alt=""
+        />
+        <h1> Sign In</h1>
+        <p>Saurabh.slack.com</p>
+        <Button onClick={signIn}>Sign In with Google</Button>
+      </LoginInnerContainer>
+    </LoginContainer>
   );
 }
 
-export default App;
+export default Login;
 
-const AppBody = styled.div`
-  display: flex;
+const LoginContainer = styled.div`
+  background-color: #f8f8f8;
   height: 100vh;
-`;
-
-const AppLoading = styled.div`
   display: grid;
   place-items: center;
-  height: 100vh;
-  width: 100%;
 `;
-const AppLoadingContents = styled.div`
+
+const LoginInnerContainer = styled.div`
+  padding: 80px;
   text-align: center;
-  padding-bottom: 100px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  > img {
-    height: 100px;
-    padding: 20px;
-    margin-bottom: 40px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  > button {
+    margin-top: 50px;
+    text-transform: inherit !important;
+    background-color: #0a8d48 !important;
+    color: white;
   }
 `;
